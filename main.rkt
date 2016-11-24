@@ -10,33 +10,19 @@
 (open-asip)
 
 ; Setup
-(out 13)
-(out 12)
-(out 11)
+(out 13) ; Traffic light 1 red
+(out 12) ; Traffic light 1 amber
+(out 11) ; Traffic light 1 green
 
-(out 10)
-(out 9)
-(out 8)
+(out 10) ; Traffic light 2 red
+(out 9) ; Traffic light 2 amber
+(out 8) ; Traffic light 2 green
 
-(out 7)
-(out 6)
+(out 7) ; Padestrian crossing 1 red
+(out 6) ; Padestrian crossing 1 green
 
-(out 5)
-(out 4)
-(on 13)
-(on 12)
-(on 11)
-
-(on 10)
-(on 9)
-(on 8)
-
-(on 7)
-(on 6)
-
-(on 5)
-(on 4)
-
+(out 5) ; Padestrian crossing 2 red
+(out 4) ; Padestrian crossing 2 green
 
 ; Setting up stuff
 (define (tl1 color)
