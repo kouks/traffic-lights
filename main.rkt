@@ -9,7 +9,7 @@
 ; Open the connection
 (open-asip)
 
-; Setup
+; Setting up stuff
 (out 13) ; Traffic light 1 red
 (out 12) ; Traffic light 1 amber
 (out 11) ; Traffic light 1 green
@@ -24,72 +24,43 @@
 (out 5) ; Padestrian crossing 2 red
 (out 4) ; Padestrian crossing 2 green
 
-; Setting up stuff
-(define (tl1 color)
-  (cond
-    [(equal? color 'green) 11]
-    [(equal? color 'amber) 12]
-    [(equal? color 'red) 13]
-  )
-)
-
-(define (tl2 color)
-  (cond
-    [(equal? color 'green) 8]
-    [(equal? color 'amber) 9]
-    [(equal? color 'red) 10]
-  )
-)
-
-(define (pc1 color)
-  (cond
-    [(equal? color 'green) 6]
-    [(equal? color 'red) 7]
-  )
-)
-
-(define (pc2 color)
-  (cond
-    [(equal? color 'green) 4]
-    [(equal? color 'red) 5]
-  )
-)
+(in 3) ; Padestrian button 1
+(in 2) ; Padestrian button 2
 
 ;Traffic 1;
 (transition (lambda ()
-  (on (pc1 'red))
-  (on (pc2 'red))
-  (on (tl1 'green))
-  (on (tl2 'red))
-  (off (tl1 'red))
-  (off (tl1 'amber))
-  (off (tl2 'amber))
-
+  (apply-state 0)
 ) 40)
 
 (transition (lambda ()
-  (off (tl1 'green))
-  (on (tl1 'amber))
-  (on (tl2 'amber))
+  (apply-state 1)
 ) 20)
 
 (transition (lambda ()
-  (on (tl1 'red))
-  (off (tl1 'amber))
-  (on (tl2 'green))
-  (off (tl2 'amber))
-  (off (tl2 'red))
+  (apply-state 2)
 ) 40)
 
 (transition (lambda ()
-  (on (tl1 'amber))
-  (off (tl2 'green))
-  (on (tl2 'amber))
+  (apply-state 3)
 ) 20)
 
 
 ; Define the loop and run it
-(define loop (new timer% [interval 100] [notify-callback call]))
+(define pressed #f)
 
-; Close the connection
-; (close-asip)
+(define loop (new timer% [interval 100] [notify-callback (lambda ()
+
+  ; Padestrian crossing button press
+  (cond
+    [(or (on? 3) (on? 2))
+      (apply-state 4)
+      (sleep 2)
+      (apply-state 5)
+      (sleep 4)
+      (apply-state 6)
+      (reset)
+      (sleep 2)
+    ]
+  )
+  (call)
+)]))

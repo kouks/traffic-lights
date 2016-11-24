@@ -20,13 +20,26 @@
   current
   total-transition-time
   timer
+  apply-state
+  states
+  reset
 )
 
 (define timer 0)
 (define current 0)
+(define transitions (list))
+(define states '(
+  (0 0 1  1 0 0  1 0  1 0)
+  (0 1 0  1 1 0  1 0  1 0)
+  (1 0 0  0 0 1  1 0  1 0)
+  (1 1 0  0 1 0  1 0  1 0)
+  (0 1 0  0 1 0  1 0  1 0)
+  (1 0 0  1 0 0  0 1  0 1)
+  (1 1 0  1 0 0  0 0  0 0)
+))
 
 (define (on? pin)
-  (equal? (digital-read pin) HIGH)
+  (equal? (digital-read pin) LOW)
 )
 
 (define (off? pin)
@@ -49,7 +62,6 @@
   (set-pin-mode pin INPUT_PULLUP_MODE)
 )
 
-(define transitions (list))
 (define (transition callback sleep)
   (set! transitions (append transitions (list (list callback sleep))))
 )
@@ -71,4 +83,14 @@
       (if (< state current) ((car t)) (void))
     )
   )
+)
+
+(define (apply-state state)
+  (for ([light (build-list 10 values)])
+    (if (= (list-ref (list-ref states state) light) 0) (off (- 13 light)) (on (- 13 light)))
+  )
+)
+
+(define (reset)
+  (set! timer 0)
 )
